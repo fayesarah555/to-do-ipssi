@@ -1,5 +1,5 @@
 ## Bienvenue sur l'Application ToDo
-
+![Project Logo](./images/ban.jpg)
 Bonjour et bienvenue sur ma solution conçue pour t'aider à organiser tes tâches et à atteindre tes objectifs avec efficacité.
 
 ### Installation
@@ -32,5 +32,5 @@ Bonjour et bienvenue sur ma solution conçue pour t'aider à organiser tes tâch
 - Une fois que tu as obtenu le jeton, ajoute-le dans l'en-tête `Authorization` de tes requêtes pour accéder aux fonctionnalités ToDo.
 
 
-![Project Logo](./images/img1.png.png)
-![Project Logo](./images/img2.png.png)
+![Project Logo](./images/img1.png)
+![Project Logo](./images/img2.png)
