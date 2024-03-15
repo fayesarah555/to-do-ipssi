@@ -30,3 +30,7 @@ Bonjour et bienvenue sur ma solution conçue pour t'aider à organiser tes tâch
 
 - Pour accéder aux fonctionnalités ToDo, tu dois te connecter. Utilise `/user/login` pour obtenir un jeton de connexion en fournissant ton email et ton mot de passe.
 - Une fois que tu as obtenu le jeton, ajoute-le dans l'en-tête `Authorization` de tes requêtes pour accéder aux fonctionnalités ToDo.
+
+
+![Project Logo](./images/img1.png.png)
+![Project Logo](./images/img2.png.png)
