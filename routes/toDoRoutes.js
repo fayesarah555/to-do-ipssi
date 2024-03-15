@@ -1,11 +1,14 @@
-// routes/todoRoutes.js
 const express = require('express');
 const router = express.Router();
-const toDoController = require('../controllers/toDoController');
+const taskController = require('../controllers/toDoController');
+const authenticateUser = require('../middleware/authenticateUser');
 
-router.get('/', toDoController.getAllTodos);
-router.post('/', toDoController.createTodo);
-router.put('/:id', toDoController.updateTodo);
-router.delete('/:id', toDoController.deleteTodo);
+router.use(authenticateUser);
+
+router.get('/', taskController.getAllTasks);
+router.get('/:id', taskController.getTaskById);
+router.post('/', taskController.createTask);
+router.put('/:id', taskController.updateTask);
+router.delete('/:id', taskController.deleteTask);
 
 module.exports = router;

@@ -1,58 +1,87 @@
-// controllers/todoController.js
-const Todo = require('../models/toDoModel');
+// taskController.js
 
-// Get all Todos
-exports.getAllTodos = async (req, res) => {
+const Task = require('../models/toDoModel');
+const jwt = require('jsonwebtoken');
+const { verifyToken } = require('../middleware/authenticateUser');
+
+// Route to get all tasks (requires authentication)
+exports.getAllTasks = async (req, res) => {
   try {
-    const todos = await Todo.findAll();
-    res.json(todos);
+    // Authenticate user using verifyToken middleware
+    verifyToken(req, res, async () => {
+      // Fetch tasks based on the user's email
+      const tasks = await Task.findAll({ where: { userEmail: req.email } });
+      res.json(tasks);
+    });
   } catch (error) {
-    console.error('Error fetching todos:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching tasks' });
   }
 };
 
-// Create a Todo
-exports.createTodo = async (req, res) => {
-  const { task, completed } = req.body;
-  try {
-    const newTodo = await Todo.create({ task, completed });
-    res.status(201).json(newTodo);
-  } catch (error) {
-    console.error('Error creating todo:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+// Other controller methods...
 
-// Update a Todo
-exports.updateTodo = async (req, res) => {
-  const { id } = req.params;
-  const { task, completed } = req.body;
-  try {
-    const todo = await Todo.findByPk(id);
-    if (!todo) {
-      return res.status(404).json({ error: 'Todo not found' });
-    }
-    await todo.update({ task, completed });
-    res.json(todo);
-  } catch (error) {
-    console.error('Error updating todo:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
 
-// Delete a Todo
-exports.deleteTodo = async (req, res) => {
+// Other controller methods...
+
+
+exports.getTaskById = async (req, res) => {
   const { id } = req.params;
   try {
-    const todo = await Todo.findByPk(id);
-    if (!todo) {
-      return res.status(404).json({ error: 'Todo not found' });
+    const task = await Task.findOne({ where: { id, userId: req.userId } });
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
     }
-    await todo.destroy();
-    res.sendStatus(204);
+    res.json(task);
   } catch (error) {
-    console.error('Error deleting todo:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching task' });
+  }
+};
+
+exports.createTask = async (req, res) => {
+  const { title, description } = req.body;
+  try {
+    const task = await Task.create({ title, description, userId: req.userId });
+    res.status(201).json(task);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error creating task' });
+  }
+};
+
+exports.updateTask = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, status } = req.body;
+  try {
+    const task = await Task.findOne({ where: { id } });
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    task.title = title;
+    task.description = description;
+    task.status = status;
+    await task.save();
+    res.json(task);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating task' });
+  }
+};
+
+
+exports.deleteTask = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const task = await Task.findOne({ where: { id} });
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    await task.destroy();
+    res.json({ message: 'Task deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting task' });
   }
 };

@@ -1,28 +1,35 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/db'); // Import the Sequelize instance
+const User = require('./user'); // Import the User model
 
 const Todo = sequelize.define('Todo', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  task: {
+  title: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  completed: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
+  description: {
+    type: DataTypes.TEXT, // Define the description column as a TEXT type
+    allowNull: true
+  },
+  status: {
+    type: DataTypes.ENUM('pending', 'completed'),
+    defaultValue: 'pending'
+  },
+  userId: { // Use 'userId' instead of 'UserId'
+    type: DataTypes.INTEGER, // Assuming userId is of INTEGER type
+    allowNull: false
   }
 });
 
-Todo.sync({ alter: true })
+// Define associations
+Todo.belongsTo(User); // A todo belongs to a user
+
+sequelize.sync()
   .then(() => {
-    console.log('Todo model synced with database.');
+    console.log('All models were synchronized successfully.');
   })
-  .catch((error) => {
-    console.error('Error syncing Todo model with database:', error);
+  .catch(err => {
+    console.error('Error synchronizing models:', err);
   });
 
 module.exports = Todo;
